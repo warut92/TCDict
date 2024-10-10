@@ -1,0 +1,2 @@
+# TCDict
+Thai - Chinese dictionary
