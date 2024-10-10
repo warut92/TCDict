@@ -1,0 +1,76 @@
+/* style.css */
+:root {
+    color-scheme: light dark;
+}
+
+body {
+    color: var(--color);
+    background-color: var(--background-color);
+}
+
+body, html {
+    font-family: 'Sarabun', sans-serif, 'Siemreap', cursive;
+    font-size: 20px;
+}
+
+header {
+    margin: auto;
+    text-align: center;
+}
+
+h1 {
+    font-family: 'Sarabun', serif;
+}
+
+input {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 2px solid red;
+  font-family: 'Sarabun', sans-serif, 'Siemreap', cursive;
+  font-size: 17px;
+}
+.mobile {
+  width: 95%;
+  padding: 0;
+  margin: 0;
+  
+  position: fixed;
+  bottom: 0;
+  background-color: var(--background-color);
+
+  box-sizing: border-box;
+  border: none;
+  font-family: 'Sarabun', sans-serif, 'Siemreap', cursive;
+  font-size: 17px;
+
+  display: flex;
+  position: fixed;
+  justify-content: center;
+  align-items: center;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid var(--border-color);
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: var(--alternate-cell-color);}
+
+tr:hover {background-color: var(--border-color);}
+
+th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: rgb(218, 39, 39);
+    color: #dad1c2;
+    font-weight: bold;
+}

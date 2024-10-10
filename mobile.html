@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="https://image.flaticon.com/icons/png/512/1644/1644899.png"/>
+<!--<div>Icons made by <a href="https://www.flaticon.com/authors/eucalyp" title="Eucalyp">Eucalyp</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>-->
+
+  <title>พจนานุกรมไทย-เขมร ออนไลน์</title>
+
+
+  <!--
+  Dark and Light Themes
+  -->
+  <script>
+  // If `prefers-color-scheme` is not supported, fall back to light mode.
+  // In this case, light.css will be downloaded with `highest` priority.
+  if (window.matchMedia('(prefers-color-scheme: dark)').media === 'not all') {
+      document.documentElement.style.display = 'none';
+      document.head.insertAdjacentHTML(
+          'beforeend',
+          '<link rel="stylesheet" href="style/light.css" onload="document.documentElement.style.display = \'\'">'
+      );
+  }
+  </script>
+  <link rel="stylesheet" href="style/dark.css" media="(prefers-color-scheme: dark)">
+  <link rel="stylesheet" href="style/light.css" media="(prefers-color-scheme: no-preference), (prefers-color-scheme: light)">
+  <link rel="stylesheet" href="style/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@200&family=Siemreap&display=swap" rel="stylesheet">
+
+
+</head>
+
+<body value="en" onload =getDictionary(this)>
+
+  <header>
+    <p>พจนานุกรมไทย-จีน ออนไลน์ 汉泰词典</p>
+
+    <!--button value="en" onclick="getDictionary(this)">English</button>-->
+  </header>
+<hr>
+
+  <div id="data" style="overflow-x:auto;">
+      <div id="search" class="mobile"></div>
+    <div id="parsed_csv_list"></div>
+
+</div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jets/0.14.1/jets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+  <script>
+    var currentDictionary = '';
+    if (window.location.search.length > 2) {
+      currentDictionary = window.location.search.slice(3);
+      console.log('current dictionary:' + currentDictionary)
+      getDictionary(currentDictionary);
+    } else {
+      console.log('no dictionary found in url.')
+    }
+
+
+
+    function getDictionary(element) {
+      console.log(element);
+
+      var languageISO;
+
+      if (typeof element == 'string') {
+        languageISO = element;
+      } else {
+        languageISO = element.value;
+      }
+
+      //history.pushState({dictionary:languageISO},'','?d=' + languageISO);
+      currentDictionary = languageISO;
+
+      var searchPlaceholder = '';
+      switch (languageISO) {
+        case 'en':
+          searchPlaceholder = "ค้นหา";
+          break;
+        default:
+          searchPlaceholder = "ค้นหา";
+      }
+
+      console.log(languageISO);
+      //var csvURL = "data/" + languageISO + "-ie.csv";
+      //var csvURL = "data/en-ie.csv";
+      var csvURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQv41M_4H4e-IzASRjEAEhhc6H9ayGsUdBXOuQ2rQQYTOhOn4b8PWaz4WPDWtT530eTWvfzijSuqxfV/pub?gid=0&single=true&output=csv";
+
+      $("#parsed_csv_list").empty();
+      $("#search").empty();
+      $("#search").html("<input id='targetLang_search' placeholder=" + searchPlaceholder + " type='search'>");
+
+      Papa.parse(csvURL, {
+        download: true,
+        header: false,
+        //worker: true,
+        //step: function(row) {
+        //  console.log("Row:", row.data);
+        //},
+        complete: displayHTMLTable
+      });
+    }
+
+    function displayHTMLTable(results){
+      var table = "<table class='table'><thead><tr>";
+      var data = results.data;
+      var header = data.shift();
+      for(h=0;h<header.length;h++){
+        table+= "<th>" + header[h] + "</th>";
+      }
+      table+= "</tr></thead><tbody id='jetsContent'>";
+
+      for(i=0;i<data.length;i++){
+        table+= "<tr>";
+        var row = data[i];
+        for(j=0;j<row.length;j++){
+          var cell = row[j];
+          table+= "<td>" + cell + "</td>";
+        }
+        table+= "</tr>";
+      }
+      table+= "</tbody></table>";
+      $("#parsed_csv_list").html(table);
+      var jets = new Jets({
+        contentTag: '#jetsContent',
+        searchInSpecificColumn: true,
+        callSearchManually: true,
+        columns: [0,1],
+        diacriticsMap: {
+          a: "ÁÀÃÂÄáàãâäāǎ",
+          я: "я́",
+          e: "ÉÈÊËéèêëēě",
+          i: "ÍÌÎÏíìîïīǐ",
+          o: "ÓÒÕÔÖóòõôöōǒ",
+          u: "ÚÙÛÜúùûŭüū",
+          c: "ĉ",
+          g: "ĝ",
+          h: "ĥ",
+          j: "ĵ",
+          s: "ŝ",
+        }
+      });
+      $("#targetLang_search").on("input", function(event) { jets.search(event.target.value, [0][1]) } );
+    }
+  </script>
+ </body>
+
+</html>
